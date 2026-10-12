@@ -1,5 +1,6 @@
 import { obtenerClientePorDefecto } from '../lib/supabaseClient.js'
 import { lanzarError } from '../lib/errores.js'
+import { resumirCoche } from '../lib/resumirCoche.js'
 import { cocheSchema, actualizarCocheSchema, idSchema } from '../validation/coche.js'
 import { busquedaSchema } from '../validation/busqueda.js'
 import { validar } from '../validation/usuario.js'
@@ -35,13 +36,6 @@ const ORDENACIONES = {
 
 // Escapa % _ \ para que el texto se busque literalmente en un ILIKE
 const escaparLike = (texto) => texto.replace(/[\\%_]/g, '\\$&')
-
-// En el listado solo se necesita la foto principal (o la primera si ninguna está marcada)
-function resumirCoche({ foto_coche, ...coche }) {
-  const fotos = [...foto_coche].sort((a, b) => a.orden - b.orden)
-  const principal = fotos.find((f) => f.es_principal) ?? fotos[0]
-  return { ...coche, foto_principal: principal?.url ?? null }
-}
 
 // Búsqueda paginada. Por defecto solo coches disponibles, página 1 y 10 por página.
 export async function buscarCoches(filtros = {}, cliente = obtenerClientePorDefecto()) {
