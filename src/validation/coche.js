@@ -25,3 +25,8 @@ export const cocheSchema = z.object({
 }).strict()
 
 export const idSchema = z.coerce.number('El id debe ser un número').int('El id debe ser un número entero').positive('El id debe ser positivo')
+
+// Para editar: cualquier subconjunto de los campos del coche, pero al menos uno
+export const actualizarCocheSchema = cocheSchema
+  .partial()
+  .refine((d) => Object.keys(d).length > 0, 'No hay campos que actualizar')

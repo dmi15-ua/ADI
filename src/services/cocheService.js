@@ -1,6 +1,6 @@
 import { obtenerClientePorDefecto } from '../lib/supabaseClient.js'
 import { lanzarError } from '../lib/errores.js'
-import { cocheSchema, idSchema } from '../validation/coche.js'
+import { cocheSchema, actualizarCocheSchema, idSchema } from '../validation/coche.js'
 import { busquedaSchema } from '../validation/busqueda.js'
 import { validar } from '../validation/usuario.js'
 
@@ -75,4 +75,26 @@ export async function buscarCoches(filtros = {}, cliente = obtenerClientePorDefe
     total: count,
     totalPaginas: Math.ceil(count / f.porPagina)
   }
+}
+
+// Con RLS, editar o borrar sin ser admin (o un coche inexistente) afecta a 0 filas, sin error de Postgres
+const SIN_PERMISOS = 'Coche no encontrado o sin permisos'
+
+// Solo administradores. Admite cualquier subconjunto de campos (al menos uno).
+export async function actualizarCoche(id, cambios, cliente = obtenerClientePorDefecto()) {
+  const cocheId = validar(idSchema, id)
+  const datos = validar(actualizarCocheSchema, cambios)
+  const { data, error } = await cliente.from('coche').update(datos).eq('id', cocheId).select().maybeSingle()
+  if (error) lanzarError(error, 'Actualizar coche')
+  if (!data) throw new Error(SIN_PERMISOS)
+  return data
+}
+
+// Solo administradores. Sus fotos se borran en cascada.
+export async function eliminarCoche(id, cliente = obtenerClientePorDefecto()) {
+  const cocheId = validar(idSchema, id)
+  const { data, error } = await cliente.from('coche').delete().eq('id', cocheId).select().maybeSingle()
+  if (error) lanzarError(error, 'Eliminar coche')
+  if (!data) throw new Error(SIN_PERMISOS)
+  return data
 }
