@@ -9,6 +9,8 @@ export function lanzarError(error, contexto = 'La operación') {
       throw new Error(`${contexto}: referencia a un registro que no existe`)
     case '23514':
       throw new Error(`${contexto}: datos no válidos`)
+    case '23P01':
+      throw new Error(`${contexto}: ya existe una cita en ese horario para ese coche`)
     default:
       throw new Error(error.message)
   }
