@@ -50,43 +50,67 @@ Riesgo: límites de Auth en la nube (registros por IP) si se ejecutan los tests 
 
 | Caso | Resultado esperado | Resultado obtenido |
 |---|---|---|
-| Registro correcto | Se crea usuario y perfil con rol cliente | |
-| Email no válido | Error de validación | |
-| Contraseña corta | Error de validación | |
-| Nombre vacío | Error de validación | |
-| Teléfono no válido | Error de validación | |
-| Email duplicado | Error | |
-| Login correcto | Devuelve JWT de 3 partes | |
-| Login con contraseña incorrecta | Error | |
-| Ver perfil propio | Devuelve el perfil | |
-| Ver perfil ajeno | Error | |
-| Ver perfil sin sesión | Error | |
-| Editar perfil propio | Datos actualizados | |
-| Editar perfil ajeno | Error y datos intactos | |
-| Datos de edición no válidos | Error de validación | |
-| Cambiar rol vía servicio | Error | |
-| Cambiar rol vía cliente directo | Error de la BD | |
-| Ver perfil tras logout | Error | |
+| Registro correcto | Se crea usuario y perfil con rol cliente | OK |
+| Email no válido | Error de validación | OK |
+| Contraseña corta | Error de validación | OK |
+| Nombre vacío | Error de validación | OK |
+| Teléfono no válido | Error de validación | OK |
+| Email duplicado | Error | OK |
+| Login correcto | Devuelve JWT de 3 partes | OK |
+| Login con contraseña incorrecta | Error | OK |
+| Ver perfil propio | Devuelve el perfil | OK |
+| Ver perfil ajeno | Error | OK |
+| Ver perfil sin sesión | Error | OK |
+| Editar perfil propio | Datos actualizados | OK |
+| Editar perfil ajeno | Error y datos intactos | OK |
+| Datos de edición no válidos | Error de validación | OK |
+| Cambiar rol vía servicio | Error | OK |
+| Cambiar rol vía cliente directo | Error de la BD | OK |
+| Ver perfil tras logout | Error | OK |
 
 ### Tests automáticos
 
 - `tests/auth-perfil.test.js`: cubre todos los casos anteriores. Los usuarios de prueba se borran al final con el cliente admin.
 
+**Resultado de la ejecución:** `npm test`: `tests/auth-perfil.test.js` con 17 tests pasados a la primera. Todos los casos de la tabla tienen su test automático.
+
 ## AI_LOG
 
 ### Herramienta usada
 
-- Herramienta:
-- Modelo:
+- Herramienta: Claude Code
+- Modelo: Claude Sonnet 5.5 (sesión en la nube)
+- Tipo: asistente de código en la nube; yo ejecuto los scripts SQL, los tests y los commits en mi equipo
 
 ### Uso realizado
 
-### Prompts importantes
+Se usó la IA para:
+
+- redactar SPEC, PLAN y TEST_PLAN;
+- generar `sql/002_perfil.sql` (tabla, trigger y RLS), los servicios de auth y perfil, las validaciones con Zod y los tests.
+
+### Prompt importante 1
+
+Se continuó con la iteración 02 (autenticación y perfil) tras pasar los 3 tests de la 01. Resultado: SQL, servicios, validaciones y tests de la iteración.
 
 ### Decisiones del estudiante
 
+Se aceptó:
+
+- Perfiles privados (cada usuario solo ve y edita el suyo).
+- Trigger que crea el perfil al registrarse.
+- Permisos de columna: solo se pueden editar `nombre` y `telefono`, el rol nunca.
+- Servicios con cliente Supabase opcional como último parámetro, para probar con varios usuarios.
+- Validación con Zod en los servicios y `CHECK` en la BD.
+
+Se rechazó o descartó:
+
+- Ninguno registrado.
+
 ### Correcciones manuales
+
+- Ninguna: los tests pasaron sin cambios. Ejecuté `002_perfil.sql` en el SQL Editor y comprobé en el Table Editor que existía la tabla `perfil` con sus 2 políticas RLS.
 
 ## COMMITS RELACIONADOS
 
-- (pendiente)
+- `HASH` - Iteración 02: autenticación con JWT y perfil de usuario

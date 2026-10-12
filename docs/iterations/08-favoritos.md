@@ -48,44 +48,73 @@ Decisiones: la clave primaria compuesta evita duplicados sin una restricción ap
 
 | Caso | Resultado esperado | Resultado obtenido |
 |---|---|---|
-| Añadir favorito | Se devuelve con usuario, coche y fecha | |
-| Coche no disponible | Se puede guardar | |
-| Añadir dos veces | Error "ya está en tus favoritos" | |
-| Dos usuarios, mismo coche | Ambos pueden | |
-| Sin sesión | Error "Debes iniciar sesión" | |
-| Coche inexistente / id no válido | Errores específicos | |
-| Listar favoritos | Del más reciente al más antiguo, con marca y foto principal | |
-| Favoritos de otro usuario | No aparecen | |
-| Sin favoritos | Lista vacía | |
-| Listar sin sesión | Error | |
-| Quitar favorito | Desaparece de la lista | |
-| Volver a guardarlo | Se puede | |
-| Quitar el favorito de otro | Error; el favorito sigue | |
-| Quitar dos veces / nunca fue favorito / id no válido / sin sesión | Errores específicos | |
-| BD: guardar a nombre de otro, leer o borrar los de otro, acceso sin sesión | No se permite | |
-| Eliminar un coche o un usuario | Se eliminan sus favoritos | |
-| Tests de búsqueda tras la refactorización | Siguen en verde | |
+| Añadir favorito | Se devuelve con usuario, coche y fecha | OK |
+| Coche no disponible | Se puede guardar | OK |
+| Añadir dos veces | Error "ya está en tus favoritos" | OK |
+| Dos usuarios, mismo coche | Ambos pueden | OK |
+| Sin sesión | Error "Debes iniciar sesión" | OK |
+| Coche inexistente / id no válido | Errores específicos | OK |
+| Listar favoritos | Del más reciente al más antiguo, con marca y foto principal | OK |
+| Favoritos de otro usuario | No aparecen | OK |
+| Sin favoritos | Lista vacía | OK |
+| Listar sin sesión | Error | OK |
+| Quitar favorito | Desaparece de la lista | OK |
+| Volver a guardarlo | Se puede | OK |
+| Quitar el favorito de otro | Error; el favorito sigue | OK |
+| Quitar dos veces / nunca fue favorito / id no válido / sin sesión | Errores específicos | OK |
+| BD: guardar a nombre de otro, leer o borrar los de otro, acceso sin sesión | No se permite | OK |
+| Eliminar un coche o un usuario | Se eliminan sus favoritos | OK |
+| Tests de búsqueda tras la refactorización | Siguen en verde | OK |
 
 ### Tests automáticos
 
 - `tests/favoritos.test.js`: cubre los casos anteriores. Borra al final los coches (y sus favoritos), marcas y usuarios que crea.
 - `tests/busqueda.test.js`: sin cambios, comprueba que `buscarCoches` sigue funcionando tras mover `resumirCoche`.
 
+**Resultado de la ejecución:** `npm test`: `tests/favoritos.test.js` pasa y los tests de búsqueda siguen en verde tras mover `resumirCoche`. Suite completa: todos los archivos pasan.
+
 ## AI_LOG
 
 ### Herramienta usada
 
-- Herramienta:
-- Modelo:
+- Herramienta: Claude Code
+- Modelo: Claude Sonnet 5.5 (sesión en la nube)
+- Tipo: asistente de código en la nube; yo ejecuto los scripts SQL, los tests y los commits en mi equipo
 
 ### Uso realizado
 
-### Prompts importantes
+Se usó la IA para:
+
+- redactar SPEC, PLAN y TEST_PLAN;
+- generar `sql/008_favoritos.sql`, `favoritoService.js` y los tests;
+- extraer `resumirCoche` a `src/lib/resumirCoche.js`;
+- redactar los borradores de `ARCHITECTURE.md`, `README.md` y `AI_SUMMARY.md` finales.
+
+### Prompt importante 1
+
+«vamos con la 8». Resultado: tabla `favorito`, servicio de favoritos, refactorización de `resumirCoche` y tests.
+
+### Prompt importante 2
+
+«ya pasa todo, prepárame ARCHITECTURE, AI_SUMMARY y README». Resultado: tres documentos de cierre.
 
 ### Decisiones del estudiante
 
+Se aceptó:
+
+- Clave primaria compuesta `(usuario_id, coche_id)` para impedir duplicados.
+- Sin paginar el listado de favoritos.
+- Se puede guardar un coche aunque no esté disponible.
+- Mover `resumirCoche` a un módulo común para usarlo en la búsqueda y en los favoritos.
+
+Se rechazó o descartó:
+
+- Ninguno registrado.
+
 ### Correcciones manuales
+
+- Ninguna registrada.
 
 ## COMMITS RELACIONADOS
 
-- (pendiente)
+- `HASH` - Iteración 08: coches favoritos

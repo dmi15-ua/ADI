@@ -58,45 +58,69 @@ Riesgos: la extensión `btree_gist` debe poder activarse en el proyecto (en Supa
 
 | Caso | Resultado esperado | Resultado obtenido |
 |---|---|---|
-| Solicitar cita | Cita pendiente de 30 min a nombre del usuario | |
-| Fecha como texto ISO y nota opcional | Funciona | |
-| Sin sesión | Error "Debes iniciar sesión" | |
-| Coche inexistente / no disponible | Errores específicos | |
-| Datos no válidos (7 casos) | Error de validación | |
-| Misma hora, mismo coche | Error "ya existe una cita" | |
-| Solapamiento parcial (antes y después) | Error | |
-| Citas consecutivas | Válidas | |
-| Misma hora, coches distintos | Válida | |
-| Cita cancelada libera el horario | Se puede reservar de nuevo | |
-| Listar mis citas | Solo las propias, ordenadas, con coche y marca | |
-| Usuario sin citas | Lista vacía | |
-| Listar sin sesión | Error | |
-| Cancelar cita propia | Estado cancelada | |
-| Cancelar cita ajena | Error; la cita sigue pendiente | |
-| Cancelar dos veces / inexistente / id no válido / sin sesión | Errores específicos | |
-| BD: cita a nombre de otro, ya confirmada, en el pasado, coche no disponible, duración incorrecta, sin sesión | Error de la BD | |
-| BD: confirmar, cambiar fecha o borrar la propia cita | No se permite | |
-| Eliminar un coche | Se eliminan sus citas | |
+| Solicitar cita | Cita pendiente de 30 min a nombre del usuario | OK |
+| Fecha como texto ISO y nota opcional | Funciona | OK |
+| Sin sesión | Error "Debes iniciar sesión" | OK |
+| Coche inexistente / no disponible | Errores específicos | OK |
+| Datos no válidos (7 casos) | Error de validación | OK |
+| Misma hora, mismo coche | Error "ya existe una cita" | OK |
+| Solapamiento parcial (antes y después) | Error | OK |
+| Citas consecutivas | Válidas | OK |
+| Misma hora, coches distintos | Válida | OK |
+| Cita cancelada libera el horario | Se puede reservar de nuevo | OK |
+| Listar mis citas | Solo las propias, ordenadas, con coche y marca | OK |
+| Usuario sin citas | Lista vacía | OK |
+| Listar sin sesión | Error | OK |
+| Cancelar cita propia | Estado cancelada | OK |
+| Cancelar cita ajena | Error; la cita sigue pendiente | OK |
+| Cancelar dos veces / inexistente / id no válido / sin sesión | Errores específicos | OK |
+| BD: cita a nombre de otro, ya confirmada, en el pasado, coche no disponible, duración incorrecta, sin sesión | Error de la BD | OK |
+| BD: confirmar, cambiar fecha o borrar la propia cita | No se permite | OK |
+| Eliminar un coche | Se eliminan sus citas | OK |
 
 ### Tests automáticos
 
 - `tests/citas.test.js`: cubre todos los casos. Borra al final los coches (y sus citas), marcas y usuarios que crea.
 
+**Resultado de la ejecución:** `npm test`: `tests/citas.test.js` pasa, incluidos los casos de solapamiento y los de seguridad en la BD. Todas las pruebas de la suite completa pasan tras añadir esta iteración.
+
 ## AI_LOG
 
 ### Herramienta usada
 
-- Herramienta:
-- Modelo:
+- Herramienta: Claude Code
+- Modelo: Claude Sonnet 5.5 (sesión en la nube)
+- Tipo: asistente de código en la nube; yo ejecuto los scripts SQL, los tests y los commits en mi equipo
 
 ### Uso realizado
 
-### Prompts importantes
+Se usó la IA para:
+
+- redactar SPEC, PLAN y TEST_PLAN;
+- generar `sql/007_citas.sql` (restricción de exclusión con `btree_gist`, `CHECK` de duración y RLS), los servicios de citas, la validación y los tests.
+
+### Prompt importante 1
+
+«vamos con la 7». Resultado: tabla `cita`, servicios `solicitarCita`, `listarMisCitas` y `cancelarCita`, y tests.
 
 ### Decisiones del estudiante
 
+Se aceptó:
+
+- Duración fija de 30 minutos, con `fin` calculado en el servicio y verificado por un `CHECK`.
+- El solapamiento lo garantiza la BD con una restricción de exclusión sobre coche y rango de tiempo, para evitar condiciones de carrera.
+- Cancelar es el «borrado» de una cita.
+- Al eliminar un coche se eliminan sus citas (resuelve la duda pendiente de la iteración 05).
+- RLS que impide crear citas ajenas, ya confirmadas, en el pasado o de coches no disponibles.
+
+Se rechazó o descartó:
+
+- Que un administrador gestione o confirme citas: queda fuera del alcance.
+
 ### Correcciones manuales
+
+- Ninguna registrada.
 
 ## COMMITS RELACIONADOS
 
-- (pendiente)
+- `HASH` - Iteración 07: citas con control de solapamientos

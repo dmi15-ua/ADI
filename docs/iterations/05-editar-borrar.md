@@ -42,41 +42,63 @@ Decisiones: no hay script SQL en esta iteración; el mensaje de "sin permisos" e
 
 | Caso | Resultado esperado | Resultado obtenido |
 |---|---|---|
-| Admin cambia precio y disponibilidad | Cambian; el resto se mantiene | |
-| Admin cambia descripción y equipamiento | Cambian | |
-| Admin cambia la marca | Cambia | |
-| Cliente edita | Error; el coche no cambia | |
-| Sin sesión edita | Error | |
-| Editar coche inexistente | Error "no encontrado" | |
-| Editar con id no válido | Error de validación | |
-| Datos no válidos (9 casos) | Error de validación | |
-| Marca inexistente al editar | Error "no existe" | |
-| Admin elimina coche con fotos | Coche y fotos desaparecen | |
-| Cliente elimina | Error; el coche sigue | |
-| Sin sesión elimina | Error; el coche sigue | |
-| Eliminar coche inexistente | Error "no encontrado" | |
-| Eliminar dos veces | La segunda falla | |
-| Eliminar con id no válido | Error de validación | |
+| Admin cambia precio y disponibilidad | Cambian; el resto se mantiene | OK |
+| Admin cambia descripción y equipamiento | Cambian | OK |
+| Admin cambia la marca | Cambia | OK |
+| Cliente edita | Error; el coche no cambia | OK |
+| Sin sesión edita | Error | OK |
+| Editar coche inexistente | Error "no encontrado" | OK |
+| Editar con id no válido | Error de validación | OK |
+| Datos no válidos (9 casos) | Error de validación | OK |
+| Marca inexistente al editar | Error "no existe" | OK |
+| Admin elimina coche con fotos | Coche y fotos desaparecen | OK |
+| Cliente elimina | Error; el coche sigue | OK |
+| Sin sesión elimina | Error; el coche sigue | OK |
+| Eliminar coche inexistente | Error "no encontrado" | OK |
+| Eliminar dos veces | La segunda falla | OK |
+| Eliminar con id no válido | Error de validación | OK |
 
 ### Tests automáticos
 
 - `tests/coches-edicion.test.js`: cubre todos los casos. Borra al final los coches, marcas y usuarios que crea.
 
+**Resultado de la ejecución:** `npm test`: `tests/coches-edicion.test.js` pasa. Todas las pruebas de la suite completa pasan tras añadir esta iteración.
+
 ## AI_LOG
 
 ### Herramienta usada
 
-- Herramienta:
-- Modelo:
+- Herramienta: Claude Code
+- Modelo: Claude Sonnet 5.5 (sesión en la nube)
+- Tipo: asistente de código en la nube; yo ejecuto los scripts SQL, los tests y los commits en mi equipo
 
 ### Uso realizado
 
-### Prompts importantes
+Se usó la IA para:
+
+- redactar SPEC, PLAN y TEST_PLAN;
+- generar `actualizarCoche`, `eliminarCoche`, el esquema de edición (`cocheSchema.partial()`) y los tests.
+
+### Prompt importante 1
+
+Resultado de `npm test` con 81 tests pasados y petición de continuar. Resultado: iteración 05 (editar y eliminar coches), sin script SQL.
 
 ### Decisiones del estudiante
 
+Se aceptó:
+
+- Edición parcial reutilizando el esquema de creación.
+- El mismo mensaje para «no encontrado» y «sin permisos», para no revelar si un id existe a quien no es admin.
+- Sin cambios en la BD: las políticas de la iteración 03 ya restringen a admin.
+
+Se rechazó o descartó:
+
+- Ninguno registrado.
+
 ### Correcciones manuales
+
+- Ninguna registrada.
 
 ## COMMITS RELACIONADOS
 
-- (pendiente)
+- `HASH` - Iteración 05: editar y eliminar coches

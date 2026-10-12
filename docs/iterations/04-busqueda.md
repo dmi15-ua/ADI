@@ -56,45 +56,69 @@ Riesgo: el escape de `%` y `_` en `ilike` a través de la API; lo comprueba un t
 
 | Caso | Resultado esperado | Resultado obtenido |
 |---|---|---|
-| Filtrar por marca | Solo coches disponibles de esa marca | |
-| Buscar no disponibles | Solo el coche no disponible | |
-| Filtrar por combustible | Solo los de ese combustible | |
-| Filtrar por tipo de cambio | Solo los de ese cambio | |
-| Rango de precio (mín. y máx. incluidos) | Solo los del rango | |
-| Solo precio mínimo / solo máximo | Filtra por ese extremo | |
-| Varios filtros combinados | Intersección de los filtros | |
-| Texto sin distinguir mayúsculas | Encuentra el modelo | |
-| Texto `%` o `_` | Sin resultados (literal) | |
-| Sin resultados | Lista vacía, total 0, 0 páginas | |
-| Marca y foto principal en cada resultado | Presentes; coche sin fotos: null | |
-| Búsqueda sin sesión | Funciona | |
-| Orden por precio asc/desc y km | Orden correcto | |
-| Valores por defecto de paginación | Página 1, 10 por página | |
-| Total y número de páginas | Correctos | |
-| Páginas consecutivas | No se solapan y cubren todo | |
-| Página fuera de rango | Lista vacía, total intacto | |
-| Última página incompleta | Menos elementos que porPagina | |
-| Parámetros no válidos (12 casos) | Error de validación | |
+| Filtrar por marca | Solo coches disponibles de esa marca | OK |
+| Buscar no disponibles | Solo el coche no disponible | OK |
+| Filtrar por combustible | Solo los de ese combustible | OK |
+| Filtrar por tipo de cambio | Solo los de ese cambio | OK |
+| Rango de precio (mín. y máx. incluidos) | Solo los del rango | OK |
+| Solo precio mínimo / solo máximo | Filtra por ese extremo | OK |
+| Varios filtros combinados | Intersección de los filtros | OK |
+| Texto sin distinguir mayúsculas | Encuentra el modelo | OK |
+| Texto `%` o `_` | Sin resultados (literal) | OK |
+| Sin resultados | Lista vacía, total 0, 0 páginas | OK |
+| Marca y foto principal en cada resultado | Presentes; coche sin fotos: null | OK |
+| Búsqueda sin sesión | Funciona | OK |
+| Orden por precio asc/desc y km | Orden correcto | OK |
+| Valores por defecto de paginación | Página 1, 10 por página | OK |
+| Total y número de páginas | Correctos | OK |
+| Páginas consecutivas | No se solapan y cubren todo | OK |
+| Página fuera de rango | Lista vacía, total intacto | OK |
+| Última página incompleta | Menos elementos que porPagina | OK |
+| Parámetros no válidos (12 casos) | Error de validación | OK |
 
 ### Tests automáticos
 
 - `tests/busqueda.test.js`: cubre todos los casos anteriores. Borra al final los coches, marcas y usuarios que crea.
 
+**Resultado de la ejecución:** `npm test`: `tests/busqueda.test.js` con 34 tests pasados a la primera. Suite completa en ese momento: 4 archivos, 81 tests pasados.
+
 ## AI_LOG
 
 ### Herramienta usada
 
-- Herramienta:
-- Modelo:
+- Herramienta: Claude Code
+- Modelo: Claude Sonnet 5.5 (sesión en la nube)
+- Tipo: asistente de código en la nube; yo ejecuto los scripts SQL, los tests y los commits en mi equipo
 
 ### Uso realizado
 
-### Prompts importantes
+Se usó la IA para:
+
+- redactar SPEC, PLAN y TEST_PLAN;
+- generar `sql/004_indices_busqueda.sql`, la validación de filtros, `buscarCoches` y los tests con datos controlados.
+
+### Prompt importante 1
+
+«vamos con la 4». Resultado: búsqueda con filtros, orden y paginación, y sus tests.
 
 ### Decisiones del estudiante
 
+Se aceptó:
+
+- Por defecto solo coches disponibles.
+- `texto` busca solo en el modelo, escapando `%` y `_`.
+- `porPagina` máximo 50.
+- Orden estable con el `id` como segundo criterio.
+- Respuesta `{ datos, pagina, porPagina, total, totalPaginas }`.
+
+Se rechazó o descartó:
+
+- Ninguno registrado.
+
 ### Correcciones manuales
+
+- Ninguna: los 34 tests pasaron sin cambios. Ejecuté `004_indices_busqueda.sql` en el SQL Editor.
 
 ## COMMITS RELACIONADOS
 
-- (pendiente)
+- `HASH` - Iteración 04: búsqueda de coches con filtros y paginación

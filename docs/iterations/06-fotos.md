@@ -46,46 +46,69 @@ Riesgo: desmarcar la principal y crear la nueva son dos operaciones, no una tran
 
 | Caso | Resultado esperado | Resultado obtenido |
 |---|---|---|
-| Admin añade foto | Foto creada, orden 0, no principal | |
-| Orden automático | Las siguientes van al final (1, 2) | |
-| Orden indicado | Se respeta | |
-| Nueva foto principal | La anterior deja de serlo; solo una principal | |
-| Cliente añade foto | Error "No autorizado" | |
-| Sin sesión añade foto | Error "No autorizado" | |
-| Cliente intenta cambiar la principal | Error; la principal no cambia | |
-| Coche inexistente al añadir | Error "Coche no encontrado" | |
-| Id de coche no válido | Error de validación | |
-| Datos no válidos (8 casos) | Error de validación | |
-| Listar fotos | Ordenadas por orden | |
-| Listar sin sesión | Funciona | |
-| Listar coche sin fotos | Lista vacía | |
-| Listar coche inexistente | Error "Coche no encontrado" | |
-| Fotos en la ficha y en la búsqueda | Galería ordenada y foto_principal correcta | |
-| Admin elimina foto | Desaparece del listado, las demás se mantienen | |
-| Cliente o sin sesión elimina | Error; la foto sigue | |
-| Eliminar foto inexistente / dos veces | Error "no encontrada" | |
-| Eliminar con id no válido | Error de validación | |
-| Eliminar la principal y marcar otra | Se puede | |
+| Admin añade foto | Foto creada, orden 0, no principal | OK |
+| Orden automático | Las siguientes van al final (1, 2) | OK |
+| Orden indicado | Se respeta | OK |
+| Nueva foto principal | La anterior deja de serlo; solo una principal | OK |
+| Cliente añade foto | Error "No autorizado" | OK |
+| Sin sesión añade foto | Error "No autorizado" | OK |
+| Cliente intenta cambiar la principal | Error; la principal no cambia | OK |
+| Coche inexistente al añadir | Error "Coche no encontrado" | OK |
+| Id de coche no válido | Error de validación | OK |
+| Datos no válidos (8 casos) | Error de validación | OK |
+| Listar fotos | Ordenadas por orden | OK |
+| Listar sin sesión | Funciona | OK |
+| Listar coche sin fotos | Lista vacía | OK |
+| Listar coche inexistente | Error "Coche no encontrado" | OK |
+| Fotos en la ficha y en la búsqueda | Galería ordenada y foto_principal correcta | OK |
+| Admin elimina foto | Desaparece del listado, las demás se mantienen | OK |
+| Cliente o sin sesión elimina | Error; la foto sigue | OK |
+| Eliminar foto inexistente / dos veces | Error "no encontrada" | OK |
+| Eliminar con id no válido | Error de validación | OK |
+| Eliminar la principal y marcar otra | Se puede | OK |
 
 ### Tests automáticos
 
 - `tests/fotos.test.js`: cubre todos los casos. Borra al final los coches (y sus fotos), marcas y usuarios que crea.
 
+**Resultado de la ejecución:** `npm test`: `tests/fotos.test.js` pasa. Todas las pruebas de la suite completa pasan tras añadir esta iteración.
+
 ## AI_LOG
 
 ### Herramienta usada
 
-- Herramienta:
-- Modelo:
+- Herramienta: Claude Code
+- Modelo: Claude Sonnet 5.5 (sesión en la nube)
+- Tipo: asistente de código en la nube; yo ejecuto los scripts SQL, los tests y los commits en mi equipo
 
 ### Uso realizado
 
-### Prompts importantes
+Se usó la IA para:
+
+- redactar SPEC, PLAN y TEST_PLAN;
+- generar `fotoService.js` (listar, añadir y eliminar), la validación de fotos y los tests.
+
+### Prompt importante 1
+
+«vamos con la 6». Resultado: servicio de fotos, validación y tests, sin script SQL.
 
 ### Decisiones del estudiante
 
+Se aceptó:
+
+- La foto principal anterior se desmarca desde el servicio, no con un trigger, para no cambiar el comportamiento de la iteración 03 (el índice único sigue protegiendo la BD).
+- No se marca como principal automáticamente la primera foto.
+- URLs solo `http://` o `https://`.
+- Las fotos son URLs, sin Supabase Storage.
+
+Se rechazó o descartó:
+
+- Un trigger en la BD para la foto principal: descartado para no reabrir la iteración 03.
+
 ### Correcciones manuales
+
+- Ninguna registrada.
 
 ## COMMITS RELACIONADOS
 
-- (pendiente)
+- `HASH` - Iteración 06: fotos de los coches (listar, añadir y eliminar)
