@@ -21,6 +21,14 @@ export async function crearUsuarioAutenticado(prefijo) {
   return { cliente, usuario, datos }
 }
 
+// Igual que el anterior, pero con rol admin (se asigna con la service role, como se haría a mano en la BD)
+export async function crearAdminAutenticado(prefijo = 'admin') {
+  const u = await crearUsuarioAutenticado(prefijo)
+  const { error } = await clienteAdmin().from('perfil').update({ rol: 'admin' }).eq('id', u.usuario.id)
+  if (error) throw new Error(error.message)
+  return u
+}
+
 export async function borrarUsuarios(ids) {
   const admin = clienteAdmin()
   for (const id of ids) await admin.auth.admin.deleteUser(id)
