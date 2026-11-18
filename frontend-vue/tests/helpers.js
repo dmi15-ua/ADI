@@ -49,8 +49,9 @@ import { crearRouter } from '../src/router/index.js'
 
 // Plugins que necesita la aplicación (router en memoria, Pinia y PrimeVue). Devuelve también el router.
 export function crearEntornoUI(rutaInicial = '/') {
-  const router = crearRouter(createMemoryHistory())
+  const pinia = createPinia()
+  const router = crearRouter(createMemoryHistory(), pinia)
   router.push(rutaInicial)
-  const plugins = [createPinia(), router, PrimeVue, ToastService, ConfirmationService]
-  return { router, plugins }
+  const plugins = [pinia, router, PrimeVue, ToastService, ConfirmationService]
+  return { router, plugins, pinia }
 }
