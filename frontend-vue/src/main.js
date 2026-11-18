@@ -5,6 +5,7 @@ import ToastService from 'primevue/toastservice'
 import ConfirmationService from 'primevue/confirmationservice'
 import Aura from '@primeuix/themes/aura'
 import 'primeicons/primeicons.css'
+import { localeEs } from './locale.js'
 import './style.css'
 import App from './App.vue'
 import { crearRouter } from './router/index.js'
@@ -15,7 +16,7 @@ createApp(App)
   .use(pinia)
   .use(crearRouter(undefined, pinia))
   // Tema claro fijo: sin esta opción PrimeVue sigue el modo oscuro del sistema, y los textos quedan blancos sobre un fondo claro
-  .use(PrimeVue, { theme: { preset: Aura, options: { darkModeSelector: false } } })
+  .use(PrimeVue, { theme: { preset: Aura, options: { darkModeSelector: false } }, locale: localeEs })
   .use(ToastService)
   .use(ConfirmationService)
   .mount('#app')

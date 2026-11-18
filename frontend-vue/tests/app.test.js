@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { mount, flushPromises } from '@vue/test-utils'
 import App from '../src/App.vue'
-import { crearEntornoUI } from './helpers.js'
+import { crearEntornoUI, crearDetalleDePrueba } from './helpers.js'
 import { logout, obtenerSesion } from '../src/servicios/services/authService.js'
 import { obtenerPerfil } from '../src/servicios/services/perfilService.js'
-import { useSesionStore } from '../src/stores/sesion.js'
+import { buscarCoches, obtenerCoche } from '../src/servicios/services/cocheService.js'
 
 vi.mock('../src/servicios/services/authService.js', () => ({
   login: vi.fn(),
@@ -13,11 +13,13 @@ vi.mock('../src/servicios/services/authService.js', () => ({
   registrar: vi.fn()
 }))
 vi.mock('../src/servicios/services/perfilService.js', () => ({ obtenerPerfil: vi.fn() }))
+vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn() }))
 
 beforeEach(() => {
   vi.clearAllMocks()
   obtenerSesion.mockResolvedValue(null)
   logout.mockResolvedValue(undefined)
+  buscarCoches.mockResolvedValue({ datos: [], pagina: 1, porPagina: 9, total: 0, totalPaginas: 0 })
 })
 
 async function montar(ruta = '/') {
@@ -38,7 +40,7 @@ describe('estructura de la aplicación', () => {
 
   it('muestra la pantalla que corresponde a la ruta', async () => {
     const { w } = await montar('/')
-    expect(w.find('main').text()).toContain('Listado de coches')
+    expect(w.find('main').text()).toContain('Coches disponibles')
     w.unmount()
   })
 
@@ -48,7 +50,7 @@ describe('estructura de la aplicación', () => {
     await w.find('a[href="/"]:not(.marca)').trigger('click')
     await flushPromises()
     expect(router.currentRoute.value.name).toBe('listado')
-    expect(w.find('main').text()).toContain('Listado de coches')
+    expect(w.find('main').text()).toContain('Coches disponibles')
     w.unmount()
   })
 
@@ -69,9 +71,11 @@ describe('estructura de la aplicación', () => {
     w.unmount()
   })
 
-  it('el detalle y la edición reciben el id de la URL', async () => {
+  it('el detalle recibe el id de la URL y pide ese coche', async () => {
+    obtenerCoche.mockResolvedValue(crearDetalleDePrueba(5, { modelo: 'Ibiza' }))
     const { w } = await montar('/coches/5')
-    expect(w.find('main').text()).toContain('Detalle del coche')
+    expect(obtenerCoche).toHaveBeenCalledWith('5')
+    expect(w.find('main').text()).toContain('Seat Ibiza')
     w.unmount()
   })
 })
