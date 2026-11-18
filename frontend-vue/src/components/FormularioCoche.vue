@@ -18,7 +18,8 @@ const props = defineProps({
   guardando: { type: Boolean, default: false },
   errorGeneral: { type: String, default: '' }, // error devuelto por el servidor al guardar
   valores: { type: Object, default: null }, // datos iniciales (edición)
-  textoGuardar: { type: String, default: 'Guardar' }
+  textoGuardar: { type: String, default: 'Guardar' },
+  modo: { type: String, default: 'crear' } // 'crear' o 'editar'
 })
 const emit = defineEmits(['guardar', 'cancelar', 'reintentar-marcas'])
 
@@ -70,6 +71,7 @@ const OBLIGATORIOS_A_ELEGIR = {
 function construirDatos() {
   const descripcion = formulario.descripcion.trim()
   const equipamiento = formulario.equipamiento.split(',').map((e) => e.trim()).filter(Boolean)
+  const editando = props.modo === 'editar'
   return {
     marca_id: formulario.marca_id,
     modelo: formulario.modelo,
@@ -79,8 +81,9 @@ function construirDatos() {
     combustible: formulario.combustible,
     transmision: formulario.transmision,
     potencia_cv: formulario.potencia_cv,
-    descripcion: descripcion || undefined, // los campos opcionales vacíos no se envían
-    equipamiento: equipamiento.length ? equipamiento : undefined,
+    // Al crear, los campos opcionales vacíos no se envían. Al editar sí, para poder borrar lo que ya había.
+    descripcion: editando ? descripcion : descripcion || undefined,
+    equipamiento: editando ? equipamiento : equipamiento.length ? equipamiento : undefined,
     disponible: formulario.disponible
   }
 }
@@ -260,7 +263,7 @@ const sinMarcas = computed(() => !props.cargandoMarcas && !props.errorMarcas && 
     <Message v-if="errorGeneral" severity="error" :closable="false" role="alert">{{ errorGeneral }}</Message>
 
     <div class="acciones">
-      <Button type="button" label="Cancelar" severity="secondary" outlined :disabled="guardando" @click="emit('cancelar')" />
+      <Button type="button" label="Cancelar" severity="secondary" outlined :disabled="guardando" @click="emit('cancelar', construirDatos())" />
       <Button type="submit" :label="textoGuardar" icon="pi pi-check" :loading="guardando" :disabled="guardando" />
     </div>
   </form>

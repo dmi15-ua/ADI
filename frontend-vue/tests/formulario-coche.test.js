@@ -228,3 +228,32 @@ describe('datos iniciales (para editar)', () => {
     expect(w.emitted('guardar')[0][0]).toEqual({ ...valoresValidosDeCoche, descripcion: 'Muy cuidado', equipamiento: ['GPS', 'Bluetooth'], disponible: false })
   })
 })
+
+describe('modo editar', () => {
+  const valores = { ...valoresValidosDeCoche, descripcion: 'Muy cuidado', equipamiento: ['GPS'], disponible: true }
+
+  it('al borrar la descripción y el equipamiento los envía vacíos, para poder quitarlos', async () => {
+    const w = montar({ modo: 'editar', valores })
+    await w.find('#descripcion').setValue('')
+    await w.find('#equipamiento').setValue('')
+    await enviar(w)
+    const datos = w.emitted('guardar')[0][0]
+    expect(datos.descripcion).toBe('')
+    expect(datos.equipamiento).toEqual([])
+  })
+
+  it('al crear, en cambio, los opcionales vacíos no se envían', async () => {
+    const w = montar({ modo: 'crear', valores: valoresValidosDeCoche })
+    await enviar(w)
+    const datos = w.emitted('guardar')[0][0]
+    expect(datos.descripcion).toBeUndefined()
+    expect(datos.equipamiento).toBeUndefined()
+  })
+
+  it('«cancelar» entrega los datos tal como están en ese momento', async () => {
+    const w = montar({ modo: 'editar', valores })
+    await w.find('#modelo').setValue('Leon')
+    await w.findAll('button').find((b) => b.text() === 'Cancelar').trigger('click')
+    expect(w.emitted('cancelar')[0][0].modelo).toBe('Leon')
+  })
+})

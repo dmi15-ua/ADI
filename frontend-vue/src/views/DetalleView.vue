@@ -1,16 +1,20 @@
 <script setup>
 import { computed, watch } from 'vue'
+import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import EstadoCarga from '../components/EstadoCarga.vue'
 import GaleriaFotos from '../components/GaleriaFotos.vue'
 import { useCochesStore } from '../stores/coches.js'
+import { useSesionStore } from '../stores/sesion.js'
 import { useVolverAlListado } from '../composables/useVolverAlListado.js'
 import { etiquetaCombustible, etiquetaTransmision, formatoKm, formatoPrecio } from '../utils/formato.js'
 
 const props = defineProps({ id: { type: String, required: true } }) // viene de la ruta /coches/:id
 
 const coches = useCochesStore()
+const sesion = useSesionStore()
+const router = useRouter()
 const volver = useVolverAlListado()
 
 watch(
@@ -30,7 +34,16 @@ watch(titulo, (t) => {
 
 <template>
   <section>
-    <Button label="Volver al listado" icon="pi pi-arrow-left" severity="secondary" text @click="volver" />
+    <div class="barra">
+      <Button label="Volver al listado" icon="pi pi-arrow-left" severity="secondary" text @click="volver" />
+      <!-- Solo los administradores ven las acciones de modificar (Supabase lo exige igualmente) -->
+      <Button
+        v-if="sesion.esAdmin && coche"
+        label="Editar"
+        icon="pi pi-pencil"
+        @click="router.push({ name: 'coche-editar', params: { id: coche.id } })"
+      />
+    </div>
 
     <div v-if="coches.detalleNoEncontrado" class="no-encontrado" role="alert">
       <i class="pi pi-search" aria-hidden="true" />
@@ -86,6 +99,12 @@ watch(titulo, (t) => {
 </template>
 
 <style scoped>
+.barra {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
 .detalle {
   display: grid;
   grid-template-columns: minmax(0, 1fr);

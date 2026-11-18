@@ -3,10 +3,12 @@ import { computed } from 'vue'
 import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
+import { useSesionStore } from '../stores/sesion.js'
 import { etiquetaCombustible, etiquetaTransmision, formatoKm, formatoPrecio } from '../utils/formato.js'
 
 const props = defineProps({ coche: { type: Object, required: true } })
 const router = useRouter()
+const sesion = useSesionStore()
 
 const titulo = computed(() => `${props.coche.marca.nombre} ${props.coche.modelo}`)
 const destino = computed(() => ({ name: 'coche-detalle', params: { id: props.coche.id } }))
@@ -31,6 +33,15 @@ const destino = computed(() => ({ name: 'coche-detalle', params: { id: props.coc
 
     <footer>
       <Button label="Ver detalle" icon="pi pi-eye" size="small" outlined @click="router.push(destino)" />
+      <Button
+        v-if="sesion.esAdmin"
+        label="Editar"
+        icon="pi pi-pencil"
+        size="small"
+        severity="secondary"
+        outlined
+        @click="router.push({ name: 'coche-editar', params: { id: coche.id } })"
+      />
     </footer>
   </article>
 </template>
@@ -96,6 +107,9 @@ h3 a {
   flex-wrap: wrap;
 }
 footer {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
   padding: 0.75rem 1rem 1rem;
 }
 </style>

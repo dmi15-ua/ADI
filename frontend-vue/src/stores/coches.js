@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { buscarCoches, obtenerCoche, crearCoche } from '../servicios/services/cocheService.js'
+import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche } from '../servicios/services/cocheService.js'
 import { mensajeDeError } from '../utils/errores.js'
 
 // Listado de coches (compartido por las pantallas que lo necesitan). Los datos son los de la página actual:
@@ -76,8 +76,14 @@ export const useCochesStore = defineStore('coches', () => {
     return crearCoche(datos)
   }
 
+  // Modifica un coche (solo administradores). Recibe solo los campos que cambian. Devuelve el coche actualizado.
+  // El detalle y el listado se vuelven a pedir cuando se abren, así que reflejan el cambio sin recargar la página.
+  async function actualizar(id, cambios) {
+    return actualizarCoche(id, cambios)
+  }
+
   return {
     items, total, totalPaginas, pagina, porPagina, cargando, error, cargar, reintentar,
-    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear
+    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear, actualizar
   }
 })
