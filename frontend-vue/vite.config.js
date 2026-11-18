@@ -5,6 +5,7 @@ export default defineConfig({
   plugins: [vue()],
   test: {
     environment: 'jsdom',
-    include: ['tests/**/*.test.js']
+    include: ['tests/**/*.test.js'],
+    setupFiles: ['tests/preparar-entorno.js']
   }
 })

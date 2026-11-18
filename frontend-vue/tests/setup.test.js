@@ -1,18 +1,19 @@
 import { describe, it, expect, vi, afterEach } from 'vitest'
 import { mount } from '@vue/test-utils'
-import { createPinia } from 'pinia'
 import App from '../src/App.vue'
 import { crearCliente, obtenerClientePorDefecto } from '../src/servicios/lib/supabaseClient.js'
 import { buscarCoches } from '../src/servicios/services/cocheService.js'
 import { listarMarcas } from '../src/servicios/services/marcaService.js'
 import { obtenerSesion, login } from '../src/servicios/services/authService.js'
-import { crearClienteFalso } from './helpers.js'
+import { crearClienteFalso, crearEntornoUI } from './helpers.js'
 
 afterEach(() => vi.unstubAllEnvs())
 
 describe('aplicación', () => {
-  it('se monta con Pinia y muestra el título', () => {
-    const w = mount(App, { global: { plugins: [createPinia()] } })
+  it('se monta con sus plugins y muestra el título', async () => {
+    const { router, plugins } = crearEntornoUI()
+    await router.isReady()
+    const w = mount(App, { global: { plugins } })
     expect(w.text()).toContain('Concesionario')
   })
 })

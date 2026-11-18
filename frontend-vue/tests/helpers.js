@@ -38,3 +38,19 @@ export function crearClienteFalso(respuestas = {}) {
     }
   }
 }
+
+// ---- Utilidades para probar la interfaz (a partir de la iteración 10) ----
+import { createMemoryHistory } from 'vue-router'
+import PrimeVue from 'primevue/config'
+import ToastService from 'primevue/toastservice'
+import ConfirmationService from 'primevue/confirmationservice'
+import { createPinia } from 'pinia'
+import { crearRouter } from '../src/router/index.js'
+
+// Plugins que necesita la aplicación (router en memoria, Pinia y PrimeVue). Devuelve también el router.
+export function crearEntornoUI(rutaInicial = '/') {
+  const router = crearRouter(createMemoryHistory())
+  router.push(rutaInicial)
+  const plugins = [createPinia(), router, PrimeVue, ToastService, ConfirmationService]
+  return { router, plugins }
+}
