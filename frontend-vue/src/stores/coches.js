@@ -1,6 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche, eliminarCoche } from '../servicios/services/cocheService.js'
+import { anadirFoto as anadirFotoServicio, eliminarFoto as eliminarFotoServicio } from '../servicios/services/fotoService.js'
 import { mensajeDeError } from '../utils/errores.js'
 
 // Listado de coches (compartido por las pantallas que lo necesitan). Los datos son los de la página actual:
@@ -72,6 +73,20 @@ export const useCochesStore = defineStore('coches', () => {
 
   const reintentarDetalle = () => cargarDetalle(idDetalle)
 
+  // Vuelve a pedir el coche que se está viendo SIN vaciarlo ni mostrar el indicador de carga (lo usan las operaciones
+  // que cambian el coche estando en su ficha, como las fotos). Si mientras tanto se pasó a otro coche, se descarta.
+  async function refrescarDetalle() {
+    if (idDetalle === null) return
+    const numero = ultimoDetalle
+    const coche = await obtenerCoche(idDetalle)
+    if (numero === ultimoDetalle) detalle.value = coche
+  }
+
+  // Fotos del coche (solo administradores; lo garantiza la RLS). Son direcciones de imágenes ya publicadas en internet.
+  // Después de cambiarlas se llama a refrescarDetalle para ver el resultado.
+  const anadirFoto = (cocheId, datos) => anadirFotoServicio(cocheId, datos)
+  const eliminarFoto = (fotoId) => eliminarFotoServicio(fotoId)
+
   // Crea un coche (solo administradores: lo garantiza la RLS de Supabase). Devuelve el coche creado.
   // El listado y el detalle se vuelven a pedir cuando se abren, así que reflejan el nuevo coche sin recargar la página.
   async function crear(datos) {
@@ -98,6 +113,7 @@ export const useCochesStore = defineStore('coches', () => {
 
   return {
     items, total, totalPaginas, pagina, filtros, porPagina, cargando, error, cargar, reintentar,
-    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear, actualizar, eliminandoId, eliminar
+    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, refrescarDetalle, crear, actualizar, eliminandoId, eliminar,
+    anadirFoto, eliminarFoto
   }
 })

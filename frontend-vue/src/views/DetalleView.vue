@@ -5,9 +5,11 @@ import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import EstadoCarga from '../components/EstadoCarga.vue'
 import GaleriaFotos from '../components/GaleriaFotos.vue'
+import GestorFotos from '../components/GestorFotos.vue'
 import { useCochesStore } from '../stores/coches.js'
 import { useSesionStore } from '../stores/sesion.js'
 import { useEliminarCoche } from '../composables/useEliminarCoche.js'
+import { useGestionFotos } from '../composables/useGestionFotos.js'
 import { useVolverAlListado } from '../composables/useVolverAlListado.js'
 import { etiquetaCombustible, etiquetaTransmision, formatoKm, formatoPrecio } from '../utils/formato.js'
 
@@ -26,6 +28,7 @@ watch(
 )
 
 const coche = computed(() => coches.detalle)
+const { anadiendo, eliminandoId, errorAnadir, anadir: anadirFoto, eliminar: eliminarFoto } = useGestionFotos(coche)
 const titulo = computed(() => (coche.value ? `${coche.value.marca.nombre} ${coche.value.modelo}` : ''))
 
 // Tras eliminar el coche, su ficha ya no existe: se vuelve al listado sin dejar la ficha en el historial
@@ -75,7 +78,19 @@ watch(titulo, (t) => {
       @reintentar="coches.reintentarDetalle()"
     >
       <article v-if="coche" class="detalle">
-        <GaleriaFotos :fotos="coche.foto_coche" :descripcion="titulo" />
+        <div class="multimedia">
+          <GaleriaFotos :fotos="coche.foto_coche" :descripcion="titulo" />
+          <!-- Solo los administradores gestionan las fotos (Supabase lo exige igualmente) -->
+          <GestorFotos
+            v-if="sesion.esAdmin"
+            :fotos="coche.foto_coche"
+            :anadiendo="anadiendo"
+            :eliminando-id="eliminandoId"
+            :error-anadir="errorAnadir"
+            @anadir="anadirFoto"
+            @eliminar="eliminarFoto"
+          />
+        </div>
 
         <div class="ficha">
           <h2>{{ titulo }}</h2>

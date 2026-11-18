@@ -2,9 +2,11 @@ import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCochesStore } from '../src/stores/coches.js'
 import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche, eliminarCoche } from '../src/servicios/services/cocheService.js'
+import { anadirFoto, eliminarFoto } from '../src/servicios/services/fotoService.js'
 import { crearCocheDePrueba, crearDetalleDePrueba, respuestaDePagina } from './helpers.js'
 
 vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn(), crearCoche: vi.fn(), actualizarCoche: vi.fn(), eliminarCoche: vi.fn() }))
+vi.mock('../src/servicios/services/fotoService.js', () => ({ anadirFoto: vi.fn(), eliminarFoto: vi.fn() }))
 
 const todos = Array.from({ length: 25 }, (_, i) => crearCocheDePrueba(i + 1))
 let coches
@@ -259,5 +261,70 @@ describe('filtros de búsqueda', () => {
     await lenta
     expect(coches.items).toHaveLength(2)
     expect(coches.filtros).toEqual({ texto: 'ab' })
+  })
+})
+
+describe('refrescar el detalle', () => {
+  it('sustituye el coche por la versión nueva sin vaciarlo ni marcar la carga', async () => {
+    obtenerCoche.mockResolvedValueOnce(crearDetalleDePrueba(5, { modelo: 'Antes' }))
+    await coches.cargarDetalle('5')
+    let terminar
+    obtenerCoche.mockReturnValueOnce(new Promise((resolver) => (terminar = resolver)))
+    const refresco = coches.refrescarDetalle()
+    expect(coches.cargandoDetalle).toBe(false)
+    expect(coches.detalle.modelo).toBe('Antes') // se sigue viendo mientras tanto
+    terminar(crearDetalleDePrueba(5, { modelo: 'Después' }))
+    await refresco
+    expect(coches.detalle.modelo).toBe('Después')
+    expect(obtenerCoche).toHaveBeenLastCalledWith('5')
+  })
+
+  it('sin ningún coche abierto no hace nada', async () => {
+    await coches.refrescarDetalle()
+    expect(obtenerCoche).not.toHaveBeenCalled()
+  })
+
+  it('si mientras tanto se abre otro coche, descarta el resultado', async () => {
+    obtenerCoche.mockResolvedValueOnce(crearDetalleDePrueba(5))
+    await coches.cargarDetalle('5')
+    let terminar
+    obtenerCoche.mockReturnValueOnce(new Promise((resolver) => (terminar = resolver)))
+    const refresco = coches.refrescarDetalle()
+    obtenerCoche.mockResolvedValueOnce(crearDetalleDePrueba(6))
+    await coches.cargarDetalle('6')
+    terminar(crearDetalleDePrueba(5, { modelo: 'Viejo' }))
+    await refresco
+    expect(coches.detalle.id).toBe(6)
+  })
+
+  it('si falla, el error llega a quien lo pidió y el coche sigue visible', async () => {
+    obtenerCoche.mockResolvedValueOnce(crearDetalleDePrueba(5))
+    await coches.cargarDetalle('5')
+    obtenerCoche.mockRejectedValueOnce(new Error('Failed to fetch'))
+    await expect(coches.refrescarDetalle()).rejects.toThrow('Failed to fetch')
+    expect(coches.detalle.id).toBe(5)
+    expect(coches.errorDetalle).toBe('')
+  })
+})
+
+describe('fotos del coche', () => {
+  it('añadir envía el coche y los datos al servicio y devuelve la foto', async () => {
+    anadirFoto.mockResolvedValue({ id: 99, url: 'https://f.test/a.jpg' })
+    const foto = await coches.anadirFoto(5, { url: 'https://f.test/a.jpg', es_principal: true })
+    expect(anadirFoto).toHaveBeenCalledWith(5, { url: 'https://f.test/a.jpg', es_principal: true })
+    expect(foto.id).toBe(99)
+  })
+
+  it('eliminar envía el id de la foto al servicio', async () => {
+    eliminarFoto.mockResolvedValue({ id: 99 })
+    await coches.eliminarFoto(99)
+    expect(eliminarFoto).toHaveBeenCalledWith(99)
+  })
+
+  it('si el servicio falla, el error llega a quien lo pidió', async () => {
+    anadirFoto.mockRejectedValue(new Error('No autorizado'))
+    eliminarFoto.mockRejectedValue(new Error('Foto no encontrada o sin permisos'))
+    await expect(coches.anadirFoto(5, { url: 'https://f.test/a.jpg' })).rejects.toThrow('No autorizado')
+    await expect(coches.eliminarFoto(99)).rejects.toThrow('Foto no encontrada o sin permisos')
   })
 })

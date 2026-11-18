@@ -54,4 +54,26 @@ describe('galería de fotos', () => {
     await w.setProps({ fotos: [{ id: 9, url: 'https://fotos.test/z.jpg', orden: 0, es_principal: true }] })
     expect(w.find('img.grande').attributes('src')).toBe('https://fotos.test/z.jpg')
   })
+
+  it('si la foto grande no se puede cargar, muestra un aviso en lugar de la imagen rota', async () => {
+    const w = montar()
+    await w.find('img.grande').trigger('error')
+    expect(w.find('img.grande').exists()).toBe(false)
+    expect(w.text()).toContain('No se puede mostrar esta foto')
+    expect(w.find('[role="img"]').attributes('aria-label')).toBe('Seat Ibiza: la foto 2 no se puede mostrar')
+  })
+
+  it('al pasar a otra foto que sí carga, vuelve a verse la imagen', async () => {
+    const w = montar()
+    await w.find('img.grande').trigger('error')
+    await w.findAll('.miniaturas button')[0].trigger('click')
+    expect(w.find('img.grande').attributes('src')).toBe('https://fotos.test/a.jpg')
+  })
+
+  it('una miniatura que no carga se sustituye por un marcador, y sigue pudiéndose elegir', async () => {
+    const w = montar()
+    await w.findAll('.miniaturas img')[2].trigger('error')
+    expect(w.findAll('.miniaturas .miniatura-rota')).toHaveLength(1)
+    expect(w.findAll('.miniaturas button')).toHaveLength(3)
+  })
 })

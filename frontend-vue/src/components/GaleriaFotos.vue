@@ -1,5 +1,5 @@
 <script setup>
-import { computed, ref, watch } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 
 // Galería de fotos de un coche: una foto grande y las miniaturas para cambiar de foto.
 // La foto principal es la que se muestra al empezar.
@@ -13,6 +13,9 @@ const indicePrincipal = computed(() => Math.max(0, props.fotos.findIndex((f) => 
 watch(() => props.fotos, () => (indice.value = indicePrincipal.value), { immediate: true })
 
 const actual = computed(() => props.fotos[indice.value])
+
+// Una foto cuya dirección no carga (o no es una imagen) se sustituye por un marcador, en lugar del icono de imagen rota
+const fallidas = reactive({})
 </script>
 
 <template>
@@ -23,7 +26,17 @@ const actual = computed(() => props.fotos[indice.value])
     </div>
 
     <template v-else>
-      <img class="grande" :src="actual.url" :alt="`${descripcion} (foto ${indice + 1} de ${fotos.length})`" />
+      <img
+        v-if="!fallidas[actual.id]"
+        class="grande"
+        :src="actual.url"
+        :alt="`${descripcion} (foto ${indice + 1} de ${fotos.length})`"
+        @error="fallidas[actual.id] = true"
+      />
+      <div v-else class="sin-fotos" role="img" :aria-label="`${descripcion}: la foto ${indice + 1} no se puede mostrar`">
+        <i class="pi pi-exclamation-triangle" aria-hidden="true" />
+        <span>No se puede mostrar esta foto</span>
+      </div>
       <ul v-if="fotos.length > 1" class="miniaturas">
         <li v-for="(foto, i) in fotos" :key="foto.id">
           <button
@@ -33,7 +46,8 @@ const actual = computed(() => props.fotos[indice.value])
             :aria-pressed="i === indice"
             @click="indice = i"
           >
-            <img :src="foto.url" alt="" />
+            <img v-if="!fallidas[foto.id]" :src="foto.url" alt="" @error="fallidas[foto.id] = true" />
+            <span v-else class="miniatura-rota"><i class="pi pi-exclamation-triangle" aria-hidden="true" /></span>
           </button>
         </li>
       </ul>
@@ -83,6 +97,15 @@ const actual = computed(() => props.fotos[indice.value])
 }
 .miniaturas button.activa {
   border-color: var(--p-primary-color, #10b981);
+}
+.miniatura-rota {
+  width: 88px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--p-surface-100, #f1f5f9);
+  color: var(--p-red-600, #dc2626);
 }
 .miniaturas img {
   width: 88px;
