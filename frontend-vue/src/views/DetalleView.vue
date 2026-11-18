@@ -7,6 +7,7 @@ import EstadoCarga from '../components/EstadoCarga.vue'
 import GaleriaFotos from '../components/GaleriaFotos.vue'
 import { useCochesStore } from '../stores/coches.js'
 import { useSesionStore } from '../stores/sesion.js'
+import { useEliminarCoche } from '../composables/useEliminarCoche.js'
 import { useVolverAlListado } from '../composables/useVolverAlListado.js'
 import { etiquetaCombustible, etiquetaTransmision, formatoKm, formatoPrecio } from '../utils/formato.js'
 
@@ -16,6 +17,7 @@ const coches = useCochesStore()
 const sesion = useSesionStore()
 const router = useRouter()
 const volver = useVolverAlListado()
+const eliminarConConfirmacion = useEliminarCoche()
 
 watch(
   () => props.id,
@@ -25,6 +27,11 @@ watch(
 
 const coche = computed(() => coches.detalle)
 const titulo = computed(() => (coche.value ? `${coche.value.marca.nombre} ${coche.value.modelo}` : ''))
+
+// Tras eliminar el coche, su ficha ya no existe: se vuelve al listado sin dejar la ficha en el historial
+async function eliminar() {
+  if (await eliminarConConfirmacion(coche.value)) router.replace({ name: 'listado' })
+}
 
 // El título de la pestaña incluye el coche que se está viendo
 watch(titulo, (t) => {
@@ -37,12 +44,18 @@ watch(titulo, (t) => {
     <div class="barra">
       <Button label="Volver al listado" icon="pi pi-arrow-left" severity="secondary" text @click="volver" />
       <!-- Solo los administradores ven las acciones de modificar (Supabase lo exige igualmente) -->
-      <Button
-        v-if="sesion.esAdmin && coche"
-        label="Editar"
-        icon="pi pi-pencil"
-        @click="router.push({ name: 'coche-editar', params: { id: coche.id } })"
-      />
+      <div v-if="sesion.esAdmin && coche" class="acciones">
+        <Button label="Editar" icon="pi pi-pencil" @click="router.push({ name: 'coche-editar', params: { id: coche.id } })" />
+        <Button
+          label="Eliminar"
+          icon="pi pi-trash"
+          severity="danger"
+          outlined
+          :loading="coches.eliminandoId === coche.id"
+          :disabled="coches.eliminandoId !== null"
+          @click="eliminar"
+        />
+      </div>
     </div>
 
     <div v-if="coches.detalleNoEncontrado" class="no-encontrado" role="alert">
@@ -99,6 +112,11 @@ watch(titulo, (t) => {
 </template>
 
 <style scoped>
+.acciones {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
 .barra {
   display: flex;
   align-items: center;

@@ -26,7 +26,8 @@ vi.mock('../src/servicios/services/cocheService.js', () => ({
   buscarCoches: vi.fn(),
   obtenerCoche: vi.fn(),
   crearCoche: vi.fn(),
-  actualizarCoche: vi.fn()
+  actualizarCoche: vi.fn(),
+  eliminarCoche: vi.fn()
 }))
 vi.mock('../src/servicios/services/marcaService.js', () => ({ listarMarcas: vi.fn() }))
 

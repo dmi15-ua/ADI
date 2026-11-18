@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCochesStore } from '../src/stores/coches.js'
-import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche } from '../src/servicios/services/cocheService.js'
+import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche, eliminarCoche } from '../src/servicios/services/cocheService.js'
 import { crearCocheDePrueba, crearDetalleDePrueba, respuestaDePagina } from './helpers.js'
 
-vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn(), crearCoche: vi.fn(), actualizarCoche: vi.fn() }))
+vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn(), crearCoche: vi.fn(), actualizarCoche: vi.fn(), eliminarCoche: vi.fn() }))
 
 const todos = Array.from({ length: 25 }, (_, i) => crearCocheDePrueba(i + 1))
 let coches
@@ -188,5 +188,30 @@ describe('actualizar un coche', () => {
   it('si falla, el error llega a quien lo pidió', async () => {
     actualizarCoche.mockRejectedValue(new Error('No autorizado'))
     await expect(coches.actualizar('5', { precio: 9000 })).rejects.toThrow('No autorizado')
+  })
+})
+
+describe('eliminar un coche', () => {
+  it('llama al servicio con el id y devuelve el coche eliminado', async () => {
+    eliminarCoche.mockResolvedValue({ id: 5 })
+    const eliminado = await coches.eliminar(5)
+    expect(eliminarCoche).toHaveBeenCalledWith(5)
+    expect(eliminado.id).toBe(5)
+  })
+
+  it('mientras se elimina indica cuál es, y después lo libera', async () => {
+    let terminar
+    eliminarCoche.mockReturnValue(new Promise((resolver) => (terminar = resolver)))
+    const pendiente = coches.eliminar(5)
+    expect(coches.eliminandoId).toBe(5)
+    terminar({ id: 5 })
+    await pendiente
+    expect(coches.eliminandoId).toBeNull()
+  })
+
+  it('si falla, el error llega a quien lo pidió y también se libera', async () => {
+    eliminarCoche.mockRejectedValue(new Error('No autorizado'))
+    await expect(coches.eliminar(5)).rejects.toThrow('No autorizado')
+    expect(coches.eliminandoId).toBeNull()
   })
 })

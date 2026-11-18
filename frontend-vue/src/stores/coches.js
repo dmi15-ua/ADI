@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche } from '../servicios/services/cocheService.js'
+import { buscarCoches, obtenerCoche, crearCoche, actualizarCoche, eliminarCoche } from '../servicios/services/cocheService.js'
 import { mensajeDeError } from '../utils/errores.js'
 
 // Listado de coches (compartido por las pantallas que lo necesitan). Los datos son los de la página actual:
@@ -82,8 +82,20 @@ export const useCochesStore = defineStore('coches', () => {
     return actualizarCoche(id, cambios)
   }
 
+  // Elimina un coche (solo administradores; sus fotos se borran en cascada en la base de datos).
+  // `eliminandoId` indica cuál se está borrando, para desactivar su botón y evitar peticiones repetidas.
+  const eliminandoId = ref(null)
+  async function eliminar(id) {
+    eliminandoId.value = id
+    try {
+      return await eliminarCoche(id)
+    } finally {
+      eliminandoId.value = null
+    }
+  }
+
   return {
     items, total, totalPaginas, pagina, porPagina, cargando, error, cargar, reintentar,
-    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear, actualizar
+    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear, actualizar, eliminandoId, eliminar
   }
 })

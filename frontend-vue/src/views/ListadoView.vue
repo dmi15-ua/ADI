@@ -19,17 +19,16 @@ const pagina = computed(() => {
   return Number.isInteger(n) && n >= 1 ? n : 1
 })
 
-watch(
-  pagina,
-  async (p) => {
-    await coches.cargar({ pagina: p })
-    // Si se pide una página que ya no existe (por ejemplo, tras borrar coches), se va a la última
-    if (!coches.error && coches.items.length === 0 && coches.total > 0 && p > coches.totalPaginas) {
-      irAPagina(coches.totalPaginas)
-    }
-  },
-  { immediate: true }
-)
+// Carga una página. Si se pide una que ya no existe (por ejemplo, tras borrar el último coche de la última página),
+// se va a la última que quede.
+async function cargarPagina(p) {
+  await coches.cargar({ pagina: p })
+  if (!coches.error && coches.items.length === 0 && coches.total > 0 && p > coches.totalPaginas) {
+    irAPagina(coches.totalPaginas)
+  }
+}
+
+watch(pagina, cargarPagina, { immediate: true })
 
 function irAPagina(n, reemplazar = true) {
   const query = { ...route.query }
@@ -38,6 +37,8 @@ function irAPagina(n, reemplazar = true) {
   return reemplazar ? router.replace({ query }) : router.push({ query })
 }
 
+// Al eliminar un coche se vuelve a pedir la página actual: los demás coches suben de sitio y el total cambia
+const alEliminar = () => cargarPagina(pagina.value)
 const alCambiarPagina = (evento) => irAPagina(evento.page + 1, false)
 const sinCoches = computed(() => coches.items.length === 0)
 </script>
@@ -58,7 +59,7 @@ const sinCoches = computed(() => coches.items.length === 0)
       @reintentar="coches.reintentar()"
     >
       <ul class="rejilla">
-        <li v-for="coche in coches.items" :key="coche.id"><CocheCard :coche="coche" /></li>
+        <li v-for="coche in coches.items" :key="coche.id"><CocheCard :coche="coche" @eliminado="alEliminar" /></li>
       </ul>
 
       <Paginator

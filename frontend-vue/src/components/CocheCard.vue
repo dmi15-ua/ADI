@@ -4,13 +4,22 @@ import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import { useSesionStore } from '../stores/sesion.js'
+import { useCochesStore } from '../stores/coches.js'
+import { useEliminarCoche } from '../composables/useEliminarCoche.js'
 import { etiquetaCombustible, etiquetaTransmision, formatoKm, formatoPrecio } from '../utils/formato.js'
 
 const props = defineProps({ coche: { type: Object, required: true } })
+const emit = defineEmits(['eliminado']) // el coche se ha eliminado: quien muestra el listado decide cómo refrescarlo
 const router = useRouter()
 const sesion = useSesionStore()
+const coches = useCochesStore()
+const eliminarConConfirmacion = useEliminarCoche()
 
 const titulo = computed(() => `${props.coche.marca.nombre} ${props.coche.modelo}`)
+async function eliminar() {
+  if (await eliminarConConfirmacion(props.coche)) emit('eliminado', props.coche)
+}
+
 const destino = computed(() => ({ name: 'coche-detalle', params: { id: props.coche.id } }))
 </script>
 
@@ -41,6 +50,17 @@ const destino = computed(() => ({ name: 'coche-detalle', params: { id: props.coc
         severity="secondary"
         outlined
         @click="router.push({ name: 'coche-editar', params: { id: coche.id } })"
+      />
+      <Button
+        v-if="sesion.esAdmin"
+        label="Eliminar"
+        icon="pi pi-trash"
+        size="small"
+        severity="danger"
+        outlined
+        :loading="coches.eliminandoId === coche.id"
+        :disabled="coches.eliminandoId !== null"
+        @click="eliminar"
       />
     </footer>
   </article>
