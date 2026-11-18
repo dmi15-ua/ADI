@@ -10,3 +10,12 @@ if (!window.matchMedia) {
     dispatchEvent: () => false
   })
 }
+
+// jsdom tampoco implementa ResizeObserver, que PrimeVue usa en algunos campos (Textarea, listas desplegables...)
+if (!window.ResizeObserver) {
+  window.ResizeObserver = class {
+    observe() {}
+    unobserve() {}
+    disconnect() {}
+  }
+}

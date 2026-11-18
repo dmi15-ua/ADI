@@ -1,17 +1,17 @@
 <script setup>
 import { computed, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import Button from 'primevue/button'
 import Tag from 'primevue/tag'
 import EstadoCarga from '../components/EstadoCarga.vue'
 import GaleriaFotos from '../components/GaleriaFotos.vue'
 import { useCochesStore } from '../stores/coches.js'
+import { useVolverAlListado } from '../composables/useVolverAlListado.js'
 import { etiquetaCombustible, etiquetaTransmision, formatoKm, formatoPrecio } from '../utils/formato.js'
 
 const props = defineProps({ id: { type: String, required: true } }) // viene de la ruta /coches/:id
 
 const coches = useCochesStore()
-const router = useRouter()
+const volver = useVolverAlListado()
 
 watch(
   () => props.id,
@@ -26,14 +26,6 @@ const titulo = computed(() => (coche.value ? `${coche.value.marca.nombre} ${coch
 watch(titulo, (t) => {
   if (t) document.title = `Concesionario · ${t}`
 })
-
-// Si se llega desde el listado, se vuelve a la misma página en la que se estaba
-function volver() {
-  const anterior = router.options.history.state.back
-  const veniaDelListado = typeof anterior === 'string' && (anterior === '/' || anterior.startsWith('/?'))
-  if (veniaDelListado) router.back()
-  else router.push({ name: 'listado' })
-}
 </script>
 
 <template>

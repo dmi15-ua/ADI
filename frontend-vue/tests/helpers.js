@@ -116,3 +116,27 @@ export function crearEntornoUIConHistorialReal(ruta = '/') {
   const plugins = [pinia, router, [PrimeVue, { locale: localeEs }], ToastService, ConfirmationService]
   return { router, plugins, pinia }
 }
+
+// ---- Formulario de coche (iteración 14) ----
+// Los campos con listas desplegables y números de PrimeVue se rellenan emitiendo su valor, como haría el componente al elegir
+export const campoFormulario = (w, nombre) => w.findComponent(`[data-campo="${nombre}"]`)
+export const ponerCampo = (w, nombre, valor) => campoFormulario(w, nombre).vm.$emit('update:modelValue', valor)
+
+export const valoresValidosDeCoche = {
+  marca_id: 1,
+  modelo: 'Ibiza',
+  precio: 18500,
+  km: 45000,
+  anio: 2019,
+  combustible: 'diesel',
+  transmision: 'manual',
+  potencia_cv: 110
+}
+
+export async function rellenarFormularioCoche(w, valores = {}) {
+  const { modelo, descripcion, equipamiento, ...numericosYListas } = { ...valoresValidosDeCoche, ...valores }
+  await w.find('#modelo').setValue(modelo)
+  for (const [nombre, valor] of Object.entries(numericosYListas)) ponerCampo(w, nombre, valor)
+  if (descripcion !== undefined) await w.find('#descripcion').setValue(descripcion)
+  if (equipamiento !== undefined) await w.find('#equipamiento').setValue(equipamiento)
+}

@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
-import { buscarCoches, obtenerCoche } from '../servicios/services/cocheService.js'
+import { buscarCoches, obtenerCoche, crearCoche } from '../servicios/services/cocheService.js'
 import { mensajeDeError } from '../utils/errores.js'
 
 // Listado de coches (compartido por las pantallas que lo necesitan). Los datos son los de la página actual:
@@ -70,8 +70,14 @@ export const useCochesStore = defineStore('coches', () => {
 
   const reintentarDetalle = () => cargarDetalle(idDetalle)
 
+  // Crea un coche (solo administradores: lo garantiza la RLS de Supabase). Devuelve el coche creado.
+  // El listado y el detalle se vuelven a pedir cuando se abren, así que reflejan el nuevo coche sin recargar la página.
+  async function crear(datos) {
+    return crearCoche(datos)
+  }
+
   return {
     items, total, totalPaginas, pagina, porPagina, cargando, error, cargar, reintentar,
-    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle
+    detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear
   }
 })

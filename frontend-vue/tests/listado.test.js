@@ -13,7 +13,7 @@ vi.mock('../src/servicios/services/authService.js', () => ({
   registrar: vi.fn()
 }))
 vi.mock('../src/servicios/services/perfilService.js', () => ({ obtenerPerfil: vi.fn() }))
-vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn() }))
+vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn(), crearCoche: vi.fn() }))
 
 const todos = Array.from({ length: 25 }, (_, i) => crearCocheDePrueba(i + 1))
 let w
@@ -188,10 +188,10 @@ describe('estados de la carga', () => {
     expect(titulos()).toHaveLength(9)
   })
 
-  it('un error de la base de datos se muestra tal cual si ya está en español', async () => {
-    buscarCoches.mockRejectedValue(new Error('No autorizado'))
+  it('un error ya escrito en español se muestra tal cual', async () => {
+    buscarCoches.mockRejectedValue(new Error('Buscar coches: datos no válidos'))
     await abrir()
-    expect(w.find('main [role="alert"]').text()).toContain('No autorizado')
+    expect(w.find('main [role="alert"]').text()).toContain('Buscar coches: datos no válidos')
   })
 })
 

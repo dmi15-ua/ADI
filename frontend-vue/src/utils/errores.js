@@ -4,6 +4,7 @@ const TRADUCCIONES = [
   [/invalid login credentials/i, 'Email o contraseña incorrectos'],
   [/email not confirmed/i, 'Todavía no has confirmado tu email'],
   [/failed to fetch|networkerror|load failed|network request failed/i, 'No se pudo conectar con el servidor. Comprueba tu conexión e inténtalo de nuevo.'],
+  [/^no autorizado$/i, 'No tienes permiso para realizar esta acción'],
   [/jwt expired/i, 'Tu sesión ha caducado. Vuelve a iniciar sesión.'],
   [/user already registered|already been registered|user_already_exists/i, 'Ya existe una cuenta con ese email'],
   [/rate limit|too many requests|over_email_send_rate_limit/i, 'Demasiados intentos seguidos. Espera un momento e inténtalo de nuevo.'],

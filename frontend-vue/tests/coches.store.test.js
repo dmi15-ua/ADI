@@ -1,10 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest'
 import { setActivePinia, createPinia } from 'pinia'
 import { useCochesStore } from '../src/stores/coches.js'
-import { buscarCoches, obtenerCoche } from '../src/servicios/services/cocheService.js'
+import { buscarCoches, obtenerCoche, crearCoche } from '../src/servicios/services/cocheService.js'
 import { crearCocheDePrueba, crearDetalleDePrueba, respuestaDePagina } from './helpers.js'
 
-vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn() }))
+vi.mock('../src/servicios/services/cocheService.js', () => ({ buscarCoches: vi.fn(), obtenerCoche: vi.fn(), crearCoche: vi.fn() }))
 
 const todos = Array.from({ length: 25 }, (_, i) => crearCocheDePrueba(i + 1))
 let coches
@@ -158,5 +158,21 @@ describe('detalle de un coche', () => {
     await lento
     expect(coches.detalle.id).toBe(6)
     expect(coches.cargandoDetalle).toBe(false)
+  })
+})
+
+describe('crear un coche', () => {
+  const datos = { marca_id: 1, modelo: 'Ibiza', precio: 18500, km: 45000, anio: 2019, combustible: 'diesel', transmision: 'manual', potencia_cv: 110 }
+
+  it('lo envía al servicio y devuelve el coche creado', async () => {
+    crearCoche.mockResolvedValue({ id: 77, ...datos })
+    const creado = await coches.crear(datos)
+    expect(crearCoche).toHaveBeenCalledWith(datos)
+    expect(creado.id).toBe(77)
+  })
+
+  it('si falla, el error llega a quien lo pidió', async () => {
+    crearCoche.mockRejectedValue(new Error('No autorizado'))
+    await expect(coches.crear(datos)).rejects.toThrow('No autorizado')
   })
 })
