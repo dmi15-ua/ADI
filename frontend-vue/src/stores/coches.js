@@ -10,6 +10,7 @@ export const useCochesStore = defineStore('coches', () => {
   const total = ref(0)
   const totalPaginas = ref(0)
   const pagina = ref(1)
+  const filtros = ref({}) // los filtros de la búsqueda actual (ver utils/filtros.js)
   const porPagina = ref(9)
   const cargando = ref(false)
   const error = ref('')
@@ -17,13 +18,14 @@ export const useCochesStore = defineStore('coches', () => {
   // Si se piden varias páginas seguidas, solo cuenta la respuesta de la última petición
   let ultimaPeticion = 0
 
-  async function cargar({ pagina: paginaPedida = pagina.value } = {}) {
+  async function cargar({ pagina: paginaPedida = pagina.value, filtros: filtrosPedidos = filtros.value } = {}) {
     const numero = ++ultimaPeticion
     pagina.value = paginaPedida
+    filtros.value = filtrosPedidos
     cargando.value = true
     error.value = ''
     try {
-      const resultado = await buscarCoches({ pagina: paginaPedida, porPagina: porPagina.value })
+      const resultado = await buscarCoches({ ...filtrosPedidos, pagina: paginaPedida, porPagina: porPagina.value })
       if (numero !== ultimaPeticion) return
       items.value = resultado.datos
       total.value = resultado.total
@@ -37,7 +39,7 @@ export const useCochesStore = defineStore('coches', () => {
     }
   }
 
-  const reintentar = () => cargar({ pagina: pagina.value })
+  const reintentar = () => cargar({ pagina: pagina.value, filtros: filtros.value })
 
   // ---- Detalle de un coche (con su marca y sus fotos) ----
   const detalle = ref(null)
@@ -95,7 +97,7 @@ export const useCochesStore = defineStore('coches', () => {
   }
 
   return {
-    items, total, totalPaginas, pagina, porPagina, cargando, error, cargar, reintentar,
+    items, total, totalPaginas, pagina, filtros, porPagina, cargando, error, cargar, reintentar,
     detalle, cargandoDetalle, errorDetalle, detalleNoEncontrado, cargarDetalle, reintentarDetalle, crear, actualizar, eliminandoId, eliminar
   }
 })

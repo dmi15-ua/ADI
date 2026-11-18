@@ -219,6 +219,17 @@ describe('el listado tras eliminar', () => {
   })
 })
 
+describe('eliminar con una búsqueda activa', () => {
+  it('tras eliminar, se vuelve a pedir la misma página con los mismos filtros', async () => {
+    conSesion('admin')
+    await abrir('/?texto=Modelo&combustible=gasolina')
+    await pulsarEliminar(0)
+    await responder('Eliminar')
+    expect(buscarCoches).toHaveBeenLastCalledWith({ texto: 'Modelo', combustible: 'gasolina', pagina: 1, porPagina: 9 })
+    expect(titulos()).toHaveLength(4)
+  })
+})
+
 describe('eliminar desde la ficha', () => {
   it('un administrador ve «Eliminar» junto a «Editar»', async () => {
     conSesion('admin')

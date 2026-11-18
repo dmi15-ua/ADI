@@ -19,3 +19,8 @@ if (!window.ResizeObserver) {
     disconnect() {}
   }
 }
+
+// El listado pide las marcas para su filtro. Por defecto, en los tests no hay ninguna y no se toca la red;
+// los tests que necesitan marcas concretas declaran su propio mock.
+import { vi } from 'vitest'
+vi.mock('../src/servicios/services/marcaService.js', () => ({ listarMarcas: vi.fn(async () => []) }))

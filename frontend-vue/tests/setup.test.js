@@ -7,6 +7,9 @@ import { listarMarcas } from '../src/servicios/services/marcaService.js'
 import { obtenerSesion, login } from '../src/servicios/services/authService.js'
 import { crearClienteFalso, crearEntornoUI } from './helpers.js'
 
+// Este test comprueba el servicio real de marcas; en el resto de tests lo sustituye el mock de preparar-entorno.js
+vi.unmock('../src/servicios/services/marcaService.js')
+
 afterEach(() => vi.unstubAllEnvs())
 
 describe('aplicación', () => {

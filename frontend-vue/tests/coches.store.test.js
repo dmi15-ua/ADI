@@ -215,3 +215,49 @@ describe('eliminar un coche', () => {
     expect(coches.eliminandoId).toBeNull()
   })
 })
+
+describe('filtros de búsqueda', () => {
+  it('sin filtros pide solo la página y el tamaño', async () => {
+    await coches.cargar({ pagina: 1 })
+    expect(buscarCoches).toHaveBeenLastCalledWith({ pagina: 1, porPagina: 9 })
+    expect(coches.filtros).toEqual({})
+  })
+
+  it('con filtros los envía al servicio junto con la página', async () => {
+    await coches.cargar({ pagina: 2, filtros: { texto: 'ibiza', marca_id: 2, precio_max: 15000 } })
+    expect(buscarCoches).toHaveBeenLastCalledWith({ texto: 'ibiza', marca_id: 2, precio_max: 15000, pagina: 2, porPagina: 9 })
+    expect(coches.filtros).toEqual({ texto: 'ibiza', marca_id: 2, precio_max: 15000 })
+  })
+
+  it('si solo se indica la página, mantiene los filtros de la búsqueda anterior', async () => {
+    await coches.cargar({ pagina: 1, filtros: { combustible: 'diesel' } })
+    await coches.cargar({ pagina: 2 })
+    expect(buscarCoches).toHaveBeenLastCalledWith({ combustible: 'diesel', pagina: 2, porPagina: 9 })
+  })
+
+  it('al cambiar a una búsqueda sin filtros, se quitan', async () => {
+    await coches.cargar({ pagina: 1, filtros: { combustible: 'diesel' } })
+    await coches.cargar({ pagina: 1, filtros: {} })
+    expect(buscarCoches).toHaveBeenLastCalledWith({ pagina: 1, porPagina: 9 })
+  })
+
+  it('reintentar tras un error repite la misma búsqueda, con sus filtros', async () => {
+    buscarCoches.mockRejectedValueOnce(new Error('Failed to fetch'))
+    await coches.cargar({ pagina: 3, filtros: { transmision: 'manual' } })
+    expect(coches.error).not.toBe('')
+    await coches.reintentar()
+    expect(buscarCoches).toHaveBeenLastCalledWith({ transmision: 'manual', pagina: 3, porPagina: 9 })
+  })
+
+  it('si se piden dos búsquedas seguidas, solo cuenta la última aunque la primera tarde más', async () => {
+    let terminarLenta
+    buscarCoches.mockReturnValueOnce(new Promise((resolver) => (terminarLenta = resolver)))
+    buscarCoches.mockResolvedValueOnce(respuestaDePagina(todos.slice(0, 2), { pagina: 1, porPagina: 9 }))
+    const lenta = coches.cargar({ pagina: 1, filtros: { texto: 'a' } })
+    await coches.cargar({ pagina: 1, filtros: { texto: 'ab' } })
+    terminarLenta(respuestaDePagina(todos, { pagina: 1, porPagina: 9 }))
+    await lenta
+    expect(coches.items).toHaveLength(2)
+    expect(coches.filtros).toEqual({ texto: 'ab' })
+  })
+})
