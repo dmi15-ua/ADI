@@ -48,7 +48,7 @@ Personalmente pensaba que iba a trabajar mas con la web de Supabase pero al fina
 
 ## Uso principal
 
-- **Redacción de la SPEC, el PLAN y el TEST_PLAN de cada iteración** (09 a 20) a petición del estudiante, que los revisaba antes de pedir el código. [REVISAR: describe aquí qué revisaste o cambiaste en las SPEC, y confirma que puedes explicar cada una.]
+- **Redacción de la SPEC, el PLAN y el TEST_PLAN de cada iteración** (09 a 20) a petición del estudiante, que los revisaba antes de pedir el código. 
 - Propuesta de la arquitectura del frontend (capas, tiendas de Pinia, rutas, composables) y de las decisiones de diseño de cada iteración.
 - Generación del código del frontend en Vue, del proyecto parcial en React y de los tests automáticos.
 - Comprobación de cada iteración en un navegador real (Chromium con Playwright) contra un Supabase **simulado**, y corrección de lo que fallaba.
@@ -57,10 +57,7 @@ Personalmente pensaba que iba a trabajar mas con la web de Supabase pero al fina
 
 ## Partes hechas o modificadas manualmente
 
-- [COMPLETAR: creación del proyecto en Supabase y de las claves; ejecutar los scripts SQL y `datos_demo.sql`; crear los usuarios y promover al administrador.]
-- [COMPLETAR: aplicar el código de cada iteración, ejecutar `npm test` y `npm run build`, y hacer los commits.]
-- [COMPLETAR: ejecutar las comprobaciones manuales con el Supabase real y rellenar los resultados de los TEST_PLAN, incluido el recorrido completo de la iteración 20.]
-- [COMPLETAR: cualquier cambio de código o de texto que hayas hecho tú.]
+- Creación de Supabase, documentacion, pruebas en localhost.
 
 ## Problemas encontrados con la IA
 
@@ -70,13 +67,9 @@ Personalmente pensaba que iba a trabajar mas con la web de Supabase pero al fina
 - **Errores en los tests escritos por la IA:** por ejemplo, Zod devuelve `descripcion: undefined` en lugar de omitir la clave, un aviso de error desaparecía por el orden en que se ejecutan los observadores, y el historial en memoria del router no guarda la página anterior. Se corrigieron al ejecutarlos.
 - **Tests que pasaban «sin probar nada»:** para evitarlo, en varias iteraciones se rompió el código a propósito y se comprobó que los tests fallaban.
 - **Instrucciones de carpeta:** al principio hubo confusión con la carpeta donde descomprimir los archivos (se creó una carpeta `frontend-vue` anidada) y con el directorio desde donde ejecutar los comandos de npm.
-- [COMPLETAR: otros problemas que hayas tenido con la IA.]
 
 ## Revisión del código generado
 
-- [COMPLETAR: cómo has revisado el código de cada iteración (por ejemplo, `git diff` antes de cada commit) y qué partes has comprobado a mano.]
 - La IA aportó en cada iteración la lista de decisiones de diseño y de lo que descartó, recogida en el AI_LOG de cada iteración (`docs/iterations/`).
 
-## Valoración personal
 
-[COMPLETAR: tu valoración personal de esta práctica.]
