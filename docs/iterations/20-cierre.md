@@ -113,7 +113,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Datos de ejemplo como script SQL idempotente.
 - Usuarios creados con el registro de la aplicación; solo la promoción a administrador por SQL.
@@ -129,8 +129,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_20` - (se rellena al hacer el commit)
+- `f9af667` - 20: cierre, README, datos de ejemplo y documentación

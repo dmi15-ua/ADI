@@ -123,7 +123,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Los filtros viven en la URL.
 - Solo se busca al pulsar «Buscar».
@@ -140,8 +140,9 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_17` - (se rellena al hacer el commit)
+- `e374c22` - Iteración 17: búsqueda con filtros
+- `d52c3ba` - Iteración 17: documentación

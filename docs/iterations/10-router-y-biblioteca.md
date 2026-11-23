@@ -106,7 +106,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - PrimeVue 4 (MIT) con el tema Aura, en lugar de la versión 5.
 - Rutas con id numérico (`:id(\\d+)`) y una ruta final que captura todo lo demás.
@@ -119,8 +119,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_10` - (se rellena al hacer el commit)
+- `86b1ad1` - Iteración 10: router y biblioteca de componentes

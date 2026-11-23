@@ -86,7 +86,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Vue 3 + Vite, con Pinia para el estado compartido.
 - Carpeta `frontend-vue/` dentro del repositorio de la práctica 1.
@@ -100,8 +100,8 @@ Se usó la IA para:
 ### Correcciones manuales
 
 - Creé el archivo `.env` de `frontend-vue/` con la URL y la clave pública (`anon`) de mi proyecto de Supabase, copiándolas del panel.
-- [COMPLETAR: otros cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_09` - (se rellena al hacer el commit)
+- `486dbd0` - Iteración 09: setup del frontend en Vue

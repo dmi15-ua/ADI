@@ -113,7 +113,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Paginación en el servidor: se pide solo la página que se ve.
 - La página actual vive en la URL (`?pagina=`).
@@ -129,8 +129,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_12` - (se rellena al hacer el commit)
+- `1686bc2` - Iteraciones 12 y 13: listado paginado y detalle de un coche

@@ -116,7 +116,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Las fotos son direcciones (URL), como en el backend.
 - La ficha se refresca sin vaciarla.
@@ -133,8 +133,9 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_18` - (se rellena al hacer el commit)
+- `c04960a` - Iteración 18: añadir foto
+- `ffd9cda` - Iteración 18: documentación

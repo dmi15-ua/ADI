@@ -108,7 +108,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - El detalle vive en la tienda de coches, compartida con la edición y el borrado.
 - «Coche no encontrado» se distingue de un error al cargar.
@@ -123,8 +123,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_13` - (se rellena al hacer el commit)
+- `1686bc2` - Iteraciones 12 y 13: listado paginado y detalle de un coche

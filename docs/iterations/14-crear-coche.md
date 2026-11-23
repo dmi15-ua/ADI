@@ -122,7 +122,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Un único componente de formulario para crear y editar.
 - Validación con el esquema del backend.
@@ -138,8 +138,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_14` - (se rellena al hacer el commit)
+- `92569bc` - Iteración 14: crear un coche

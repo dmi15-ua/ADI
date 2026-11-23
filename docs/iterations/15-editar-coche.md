@@ -116,7 +116,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Reutilizar el formulario de la iteración 14 en modo «editar».
 - Enviar solo los campos que cambian.
@@ -132,8 +132,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_15` - (se rellena al hacer el commit)
+- `fa68f06` - Iteración 15: editar un coche

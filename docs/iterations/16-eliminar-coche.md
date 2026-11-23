@@ -104,7 +104,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Confirmación obligatoria con el nombre del coche y el aviso de que no se puede deshacer.
 - Volver a pedir la página actual tras eliminar, en lugar de quitar la tarjeta a mano.
@@ -120,8 +120,9 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_16` - (se rellena al hacer el commit)
+- `f9c5d63` - Iteración 16: borrar un coche
+- `3da3cc2` - Iteración 16: documentación

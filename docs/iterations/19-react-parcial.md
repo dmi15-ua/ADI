@@ -124,7 +124,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - Proyecto separado con los servicios copiados (y un test que comprueba que son idénticos).
 - La sesión en un Context y el listado en un hook.
@@ -140,8 +140,9 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_19` - (se rellena al hacer el commit)
+- `0a530a6` - Iteración 19: proyecto React
+- `7157a73` - Iteración 19: documentación

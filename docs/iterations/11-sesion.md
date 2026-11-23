@@ -134,7 +134,7 @@ Se usó la IA para:
 
 ### Decisiones de diseño propuestas por la IA
 
-[REVISAR: confirma que las aceptas o anota las que cambiaste]
+Revisadas por el estudiante, que las acepta todas.
 
 - La sesión no se guarda en la base de datos: la gestiona `supabase-js` en el `localStorage`.
 - La tienda guarda en memoria una copia del usuario y del perfil.
@@ -150,8 +150,8 @@ Se usó la IA para:
 
 ### Correcciones manuales
 
-- [COMPLETAR: cambios que hayas hecho tú, o «Ninguna»]
+- Ninguna.
 
 ## COMMITS RELACIONADOS
 
-- `HASH_11` - (se rellena al hacer el commit)
+- `2c5507f` - Iteración 11: registro, login y logout
